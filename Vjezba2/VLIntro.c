@@ -146,9 +146,9 @@ int DeleteElement(const char* last_name, Position P){
 }
 
 int FreeList(Position head) {
-
-	//koristimo current za setanje po listi
-	//preskacemo head jer nije dinamicki alociran
+	/*problem: puca veza izmedu head-a i ostatka liste
+	koristimo current za setanje po listi
+	preskacemo head jer nije dinamicki alociran
 	Position current = head->Next;
 
 	while (current != NULL) {
@@ -162,7 +162,16 @@ int FreeList(Position head) {
 		free(temp);
 	}
 
-	//na kraju head ne pokazuje na nista
-	head->Next = NULL;
+	na kraju head ne pokazuje na nista
+	head->Next = NULL;*/
+
+	//verzija koja zadrzava vezu elemenata liste
+	Position temp;
+	while (head->Next != NULL) {
+		temp = head->Next;
+		head->Next = temp->Next;
+		free(temp);
+	}
+	
 	return 0;
 }
