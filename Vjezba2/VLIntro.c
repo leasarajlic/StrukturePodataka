@@ -16,7 +16,7 @@ typedef struct Person {
 
 }_person;
 
-//prototipovi
+//prototipovi zad 2.
 int InsertFront(const char *, const char *, int, Position);
 int InsertBack(const char *, const char *, int, Position);
 int PrintList(Position);
@@ -146,30 +146,11 @@ int DeleteElement(const char* last_name, Position P){
 }
 
 int FreeList(Position head) {
-	/*problem: puca veza izmedu head-a i ostatka liste
-	koristimo current za setanje po listi
-	preskacemo head jer nije dinamicki alociran
-	Position current = head->Next;
-
-	while (current != NULL) {
-		//temp je element za brisanje
-		Position temp = current;
-
-		//pomicemo se na iduci element
-		current = current->Next;
-
-		//oslobadamo memoriju od temp
-		free(temp);
-	}
-
-	na kraju head ne pokazuje na nista
-	head->Next = NULL;*/
-
-	//verzija koja zadrzava vezu elemenata liste
-	Position temp;
+	
 	while (head->Next != NULL) {
-		temp = head->Next;
+		Position temp = head->Next;
 		head->Next = temp->Next;
+		temp->Next = NULL;
 		free(temp);
 	}
 	
