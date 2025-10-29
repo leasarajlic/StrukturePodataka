@@ -4,13 +4,18 @@
 #include <string.h>
 #include <ctype.h>
 #define MAX_LENGTH 30
+/*3. Prethodnom zadatku dodati funkcije:
+A. dinamički dodaje novi element iza određenog elementa,
+B. dinamički dodaje novi element ispred određenog elementa,
+C. sortira listu po prezimenima osoba,
+D. upisuje listu u datoteku,
+E. čita listu iz datoteke.*/
 
 typedef struct Person* Position;
 
 typedef struct Person {
 	char firstName[MAX_LENGTH], lastName[MAX_LENGTH];
 	int Byear;
-
 	//pokazuje na iduci element
 	Position Next;
 
