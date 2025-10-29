@@ -22,6 +22,9 @@ typedef struct Person {
 
 }_person;
 
+//pomocne funkcije
+int GetPerson(char *, char *, int *);
+int GetLastName(char *);
 int UserInput(Position);
 int upper_strcmp(const char *, const char*);
 
@@ -57,7 +60,16 @@ int main() {
 	FreeList(&head);
 	return 0;
 }
-
+int GetPerson(char * name, char * last_name, int * year){
+    char buffer[128];
+    if(!fgets(buffer, sizeof(buffer), stdin)) return 0;
+    return sscanf(buffer, "%29s %29s %d", name, last_name, year) == 3;
+}
+int GetLastName(char *last_name){
+    char buffer[128];
+     if(!fgets(buffer, sizeof(buffer), stdin)) return 0;
+    return sscanf(buffer, "%29s", last_name) == 1;
+}
 int UserInput(Position P) {
 	int choice = -1;
 	char buffer[128];
@@ -79,57 +91,57 @@ int UserInput(Position P) {
 				return 0;
 			case 1:
 				printf("Unesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s %29s %d", tmp_name, tmp_last_name, &tmp_year) != 3) {
-					printf("uneseni krivi podatci, pokusajte ponovo\n");
+				if (GetPerson(tmp_name, tmp_last_name, &tmp_year)) {
+						InsertFirst(tmp_name, tmp_last_name, tmp_year, P);
 					break;
 				}
-				InsertFirst(tmp_name, tmp_last_name, tmp_year, P);
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
 				break;
 			case 2:
 				printf("Unesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s %29s %d", tmp_name, tmp_last_name, &tmp_year) != 3) {
-					printf("uneseni krivi podatci, pokusajte ponovo\n");
+				if (GetPerson(tmp_name, tmp_last_name, &tmp_year)) {
+						InsertLast(tmp_name, tmp_last_name, tmp_year, P);
 					break;
 				}
-				InsertLast(tmp_name, tmp_last_name, tmp_year, P);
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
 				break;
 			case 3:
 				printf("Unesite prezime osobe koju zelite pronaci: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s", lookup_last_name) != 1) {
-					printf("uneseni krivi podatci, pokusajte ponovo\n");
+				if (GetLastName(lookup_last_name)) {
+						Find(lookup_last_name, P);
 					break;
 				}
-				Find(lookup_last_name, P);
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
 				break;
 			case 4:
-				printf("Unesite prezime osobe koju zelite izbrisati: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s", lookup_last_name) != 1) {
-					printf("\nuneseni krivi podatci, pokusajte ponovo\n");
+				printf("Unesite prezime osobe koju zelite pronaci: ");
+				if (GetLastName(lookup_last_name)) {
+						DeleteElement(lookup_last_name, P);
 					break;
 				}
-				DeleteElement(lookup_last_name, P);
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
 				break;
 			case 5:
 				printf("Unesite prezime osobe prije koje unosite novi element: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s", lookup_last_name) != 1) {
+				if (!GetLastName(lookup_last_name)) {
 					printf("uneseni krivi podatci, pokusajte ponovo\n");
 					break;
 				}
 				printf("Unesite redom ime, prezime i godinu rodenja nove osobe, odvojiti razmakom: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s %29s %d", tmp_name, tmp_last_name, &tmp_year) != 3) {
+				if (!GetPerson(tmp_name, tmp_last_name, &tmp_year)) {
 					printf("uneseni krivi podatci, pokusajte ponovo\n");
 					break;
 				}
 				InsertBefore(lookup_last_name, tmp_name, tmp_last_name, tmp_year, P);
 				break;
 			case 6:
-				printf("Unesite prezime osobe nakon koje unosite novi element: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s", lookup_last_name) != 1) {
+				printf("Unesite prezime osobe prije koje unosite novi element: ");
+				if (!GetLastName(lookup_last_name)) {
 					printf("uneseni krivi podatci, pokusajte ponovo\n");
 					break;
 				}
-				printf("\nUnesite redom ime, prezime i godinu rodenja nove osobe, odvojiti razmakom: ");
-				if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer,"%29s %29s %d", tmp_name, tmp_last_name, &tmp_year) != 3) {
+				printf("Unesite redom ime, prezime i godinu rodenja nove osobe, odvojiti razmakom: ");
+				if (!GetPerson(tmp_name, tmp_last_name, &tmp_year)) {
 					printf("uneseni krivi podatci, pokusajte ponovo\n");
 					break;
 				}
@@ -141,7 +153,6 @@ int UserInput(Position P) {
 			}
 	}
 }
-
 int upper_strcmp(const char* string1, const char* string2) {
 	int i = 0;
 	char str1[MAX_LENGTH] = "", str2[MAX_LENGTH] = "";
@@ -197,6 +208,7 @@ int DeleteElement(const char* last_name, Position P) {
 
 	//element odspojiti iz liste prije brisanja
 	Prev->Next = temp->Next;
+	temp->Next =NULL;
 	//oslobadanje memorije
 	free(temp);
 
