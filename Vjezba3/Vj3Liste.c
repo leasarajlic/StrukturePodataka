@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #define MAX_LENGTH 30
-
 
 typedef struct Person* Position;
 
@@ -16,6 +16,9 @@ typedef struct Person {
 
 }_person;
 
+int UserInput(Position);
+int upper_strcmp(const char *, const char*);
+
 //zad 2.
 int InsertFirst(const char *, const char *, int, Position);
 int InsertLast(const char *, const char *, int, Position);
@@ -25,41 +28,107 @@ Position FindPrev(const char *, Position);
 int DeleteElement(const char *, Position);
 int FreeList(Position);
 
-
 //zadatak 3.
 int InsertBefore(const char*, const char*, const char*, int, Position);
 int InsertAfter(const char*, const char*, const char*, int, Position);
 int SortAll(Position);
-int WriteToDocument(Position);
 int ReadFromDocument(Position);
-
-
+int WriteToDocument(Position);
 
 int main() {
-
-	//head nema podatke, sluzi samo za implementaciju liste
 	_person head = { .firstName =  "", .lastName = "", .Byear = 0, NULL };
-
-	InsertFirst("Ante", "Antic", 2000, &head);
-	InsertLast("Marta", "Ivancic", 2006, &head);
-	InsertBefore("Antic","Lara","Laric", 1998, &head);
-	InsertAfter("Laric", "Lovre", "Hrstic", 1993, &head);
-	DeleteElement("Hrstic", &head);
-	Find("Hrstic", &head);
-
+	UserInput(&head);
+	PrintList(head.Next);
 	printf("\nbrisemo staru listu\n");
-	FreeList(&head);
 	ReadFromDocument(&head);
 	printf("\nnesortirana lista ucitana iz dokuemnta\n");
-	PrintList(&head);
+	PrintList(head.Next);
 	printf("\nsortirano po prezimenu\n");
 	SortAll(&head);
-	PrintList(&head);
+	PrintList(head.Next);
 
 	WriteToDocument(&head);
 	FreeList(&head);
-
 	return 0;
+}
+
+int UserInput(Position P) {
+	int choice = -1, quit = 0;
+	while (choice != quit) {
+		char tmp_name[MAX_LENGTH] = "", tmp_last_name[MAX_LENGTH] = "", lookup_last_name[MAX_LENGTH] = "";
+		int tmp_year = 0;
+		printf("\nIzaberite akciju nad listom:\n");
+		printf("1 - Unos na pocetak\n2 - Unos na kraj\n3 - Pronadi element\n4 - Izbrisi element\n");
+		printf("5 - Unos prije elementa\n6 - Unos poslije elementa\n");
+		printf("0 - prekini unos elemenata\n");
+		printf("Odabir: ");
+		if (scanf("%d", &choice) == 1) {
+			switch (choice) {
+			case 0:
+				printf("\nkraj unosa elemenata\n");
+				return 0;
+			case 1:
+				printf("\nUnesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
+				scanf("%29s %29s %d", tmp_name, tmp_last_name, &tmp_year);
+				InsertFirst(tmp_name, tmp_last_name, tmp_year, P);
+				break;
+			case 2:
+				printf("\nUnesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
+				scanf("%29s %29s %d", tmp_name, tmp_last_name, &tmp_year);
+				InsertLast(tmp_name, tmp_last_name, tmp_year, P);
+				break;
+			case 3:
+				printf("\nUnesite prezime osobe koju zelite pronaci: ");
+				scanf("%29s", lookup_last_name);
+				Find(lookup_last_name, P);
+				break;
+			case 4:
+				printf("\nUnesite prezime osobe koju zelite izbrisati: ");
+				scanf("%29s", lookup_last_name);
+				DeleteElement(lookup_last_name, P);
+				break;
+			case 5:
+				printf("Unesite prezime osobe prije koje unosite novi element: ");
+				scanf("%29s", lookup_last_name);
+				printf("\nUnesite redom ime, prezime i godinu rodenja nove osobe, odvojiti razmakom: ");
+				scanf("%29s %29s %d", tmp_name, tmp_last_name, &tmp_year);
+				InsertBefore(lookup_last_name, tmp_name, tmp_last_name, tmp_year, P);
+				break;
+			case 6:
+				printf("Unesite prezime osobe nakon koje unosite novi element: ");
+				scanf("%29s", lookup_last_name);
+				printf("\nUnesite redom ime, prezime i godinu rodenja nove osobe, odvojiti razmakom: ");
+				scanf("%29s %29s %d", tmp_name, tmp_last_name, &tmp_year);
+				InsertAfter(lookup_last_name, tmp_name, tmp_last_name, tmp_year, P);
+				break;
+			default:
+				printf("\nUnesena je nedozvoljena vrijednost, pokusajte ponovo.\n");
+				break;
+
+			}
+		}
+		else {
+			printf("\nUnesena je nedozvoljena vrijednost, pokusajte ponovo.\n");
+			while (getchar() != '\n');
+			choice = -1;
+			continue;
+		}
+	}
+	return 0;
+}
+
+int upper_strcmp(const char* string1, const char* string2) {
+	int i = 0;
+	char str1[MAX_LENGTH] = "", str2[MAX_LENGTH] = "";
+	strcpy(str1, string1);
+	strcpy(str2, string2);
+	for (i = 0; str1[i]; i++) {
+		str1[i] = toupper((unsigned char)str1[i]);
+	}
+	for (i = 0; str2[i]; i++) {
+		str2[i] = toupper((unsigned char)str2[i]);
+	}
+	return strcmp(str1, str2);
 }
 
 //funkcije poredane abecedno i po zadatcima
@@ -68,7 +137,7 @@ int main() {
 
 Position Find(const char* last_name, Position P) {
 	P = P->Next;
-	while (P != NULL && (strcmp(P->lastName, last_name) != 0))
+	while (P != NULL && (upper_strcmp(P->lastName, last_name) != 0))
 		P = P->Next;
 	if (P != NULL)
 		printf("\nOsoba %s %s pronadena u listi\n", P->firstName, P->lastName);
@@ -78,26 +147,22 @@ Position Find(const char* last_name, Position P) {
 }
 
 Position FindPrev(const char* last_name, Position P) {
-	while (P->Next != NULL && (strcmp(P->Next->lastName, last_name) != 0))
+	while (P->Next != NULL && (upper_strcmp(P->Next->lastName, last_name) != 0))
 		P = P->Next;
 
 	return P;
 }
-
 int FreeList(Position head) {
-
 	while (head->Next != NULL) {
 		Position temp = head->Next;
 		head->Next = temp->Next;
 		temp->Next = NULL;
 		free(temp);
 	}
-
 	return 0;
 }
 
 int DeleteElement(const char* last_name, Position P) {
-
 	Position Prev = FindPrev(last_name, P);
 	if (Prev->Next == NULL) {
 		printf("\nosoba s prezimenom %s nije u listi\n", last_name);
@@ -112,7 +177,6 @@ int DeleteElement(const char* last_name, Position P) {
 
 	return 0;
 }
-
 int InsertFirst(const char* name, const char* last_name, int year, Position P){
 	Position temp;
 	temp = (Position)malloc(sizeof(_person));
@@ -122,18 +186,15 @@ int InsertFirst(const char* name, const char* last_name, int year, Position P){
 	}
 	temp->Next = NULL;
 
-	//unos podataka
 	strcpy(temp->firstName, name);
 	strcpy(temp->lastName, last_name);
 	temp->Byear = year;
 
-	//umetanje iza head-a
 	temp->Next = P->Next;
 	P->Next = temp;
 
 	return 0;
 }
-
 int InsertLast(const char* name, const char* last_name, int year, Position P){
 	Position temp;
 	while (P->Next != NULL)
@@ -145,21 +206,15 @@ int InsertLast(const char* name, const char* last_name, int year, Position P){
 	}
 	temp->Next = NULL;
 
-	//unos podataka
 	strcpy(temp->firstName, name);
 	strcpy(temp->lastName, last_name);
 	temp->Byear = year;
 
-	//umetanje na kraj
 	P->Next = temp;
 
 	return 0;
 }
-
 int PrintList(Position P){
-
-	//preskacemo head - nema podataka za ispis
-	P = P->Next;
 	if (P == NULL) {
 		printf("\nlista je prazna\n");
 		return 0;
@@ -171,7 +226,6 @@ int PrintList(Position P){
 	}
 	return 0;
 }
-
 
  //zad 3. funk:
 
@@ -188,20 +242,17 @@ int InsertAfter(const char* last_name_el, const char* name, const char* last_nam
 	}
 	temp->Next = NULL;
 
-	//podatci
 	strcpy(temp->firstName, name);
 	strcpy(temp->lastName, last_name);
 	temp->Byear = year;
 
-	//spoji s listom
 	temp->Next = prev->Next;
 	prev->Next = temp;
 	return 0;
 }
-
 int InsertBefore(const char* last_name_el , const char* name , const char* last_name, int year, Position P){
 	Position prev = FindPrev(last_name_el, P);
-	if (prev == NULL) {
+	if (prev->Next == NULL) {
 		printf("Umetanje nije moguce. Osoba %s nije u listi\n", last_name_el);
 		return 0;
 	}
@@ -212,18 +263,14 @@ int InsertBefore(const char* last_name_el , const char* name , const char* last_
 	}
 	temp->Next = NULL;
 
-	//podatci
 	strcpy(temp->firstName, name);
 	strcpy(temp->lastName, last_name);
 	temp->Byear = year;
 
-	//spoji s listom
 	temp->Next = prev->Next;
 	prev->Next = temp;
-
 	return 0;
 }
-
 int SortAll(Position H){
 
 	//Za sortiranje se koristi bubble sort
@@ -247,7 +294,7 @@ int SortAll(Position H){
 
 		while (p->Next != Sorted) {
 			//ako je prezime na p vece od q - zapocni zamjenu
-			if (strcmp(p->lastName, q->lastName) > 0) {
+			if (upper_strcmp(p->lastName, q->lastName) > 0) {
 
 				//zamjeni cvorove
 				p->Next = q->Next;
@@ -266,13 +313,10 @@ int SortAll(Position H){
 				q = q->Next;
 			}
 		}
-		//kad je p->Next Sorted, stavi sorted na p
 		Sorted = p;
 	}
-	
 	return 0;
 }
-
 int ReadFromDocument(Position P) {
 	//obrisi staru listu prije ucitavanja nove
 	FreeList(P);
@@ -290,7 +334,6 @@ int ReadFromDocument(Position P) {
 	fclose(read);
 	return 0;
 }
-
 int WriteToDocument(Position P){
 	FILE* write;
 	write = fopen("PeopleFromList.txt", "w");
@@ -303,12 +346,10 @@ int WriteToDocument(Position P){
 		return 0;
 	}
 	P = P->Next;
-	fprintf(write, "Osobe procitane iz liste:\n");
 	while (P != NULL) {
 		fprintf(write, "%s %s %d\n", P->firstName, P->lastName, P->Byear);
 		P = P->Next;
 	}
 	fclose(write);
 	return 0;
-
 }
