@@ -1,15 +1,16 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#define MAX_LENGTH 30
 /*3. Prethodnom zadatku dodati funkcije:
 A. dinamički dodaje novi element iza određenog elementa,
 B. dinamički dodaje novi element ispred određenog elementa,
 C. sortira listu po prezimenima osoba,
 D. upisuje listu u datoteku,
 E. čita listu iz datoteke.*/
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#define MAX_LENGTH 30
 
 typedef struct Person* Position;
 
