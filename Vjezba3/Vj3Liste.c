@@ -197,6 +197,7 @@ int DeleteElement(const char* last_name, Position P) {
 
 	//element odspojiti iz liste prije brisanja
 	Prev->Next = temp->Next;
+	temp->Next = NULL;
 	//oslobadanje memorije
 	free(temp);
 
