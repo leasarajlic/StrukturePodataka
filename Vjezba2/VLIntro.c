@@ -21,8 +21,8 @@ int UserInput(Position);
 int upper_strcmp(const char*, const char*);
 
 //prototipovi zad 2.
-int InsertFront(const char *, const char *, int, Position);
-int InsertBack(const char *, const char *, int, Position);
+int InsertFirst(const char *, const char *, int, Position);
+int InsertLast(const char *, const char *, int, Position);
 int PrintList(Position);
 Position Find(const char *, Position);
 Position FindPrev(const char *, Position);
@@ -41,53 +41,60 @@ int main() {
 	return 0;
 }
 int UserInput(Position P) {
-	int choice = -1, quit = 0;
-	while (choice != quit) {
+	int choice = -1;
+	char buffer[128];
+	while (1) {
 		char tmp_name[MAX_LENGTH] = "", tmp_last_name[MAX_LENGTH] = "", lookup_last_name[MAX_LENGTH] = "";
 		int tmp_year = 0;
 		printf("\nIzaberite akciju nad listom:\n");
 		printf("1 - Unos na pocetak\n2 - Unos na kraj\n3 - Pronadi element\n4 - Izbrisi element\n");
 		printf("0 - prekini unos elemenata\n");
 		printf("Odabir: ");
-		if (scanf("%d", &choice) == 1) {
-			switch (choice) {
-			case 0:
-				printf("\nkraj unosa elemenata\n");
-				return 0;
-			case 1:
-				printf("\nUnesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
-				scanf("%29s %29s %d", tmp_name, tmp_last_name, &tmp_year);
-				InsertFront(tmp_name, tmp_last_name, tmp_year, P);
-				break;
-			case 2:
-				printf("\nUnesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
-				scanf("%29s %29s %d", tmp_name, tmp_last_name, &tmp_year);
-				InsertBack(tmp_name, tmp_last_name, tmp_year, P);
-				break;
-			case 3:
-				printf("\nUnesite prezime osobe koju zelite pronaci: ");
-				scanf("%29s", lookup_last_name);
-				Find(lookup_last_name, P);
-				break;
-			case 4:
-				printf("\nUnesite prezime osobe koju zelite izbrisati: ");
-				scanf("%29s", lookup_last_name);
-				DeleteElement(lookup_last_name, P);
-				break;
-			default:
-				printf("\nUnesena je nedozvoljena vrijednost, pokusajte ponovo.\n");
-				break;
-
-			}
-		}
-		else {
-			printf("\nUnesena je nedozvoljena vrijednost, pokusajte ponovo.\n");
-			while (getchar() != '\n');
-			choice = -1;
+		if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer, "%d", &choice) != 1) {
+			printf("greska pri unosu, pokusajte opet\n");
 			continue;
 		}
+		switch (choice) {
+		case 0:
+			printf("kraj unosa elemenata\n");
+			return 0;
+		case 1:
+			printf("Unesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
+			if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer, "%29s %29s %d", tmp_name, tmp_last_name, &tmp_year) != 3) {
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
+				break;
+			}
+			InsertFirst(tmp_name, tmp_last_name, tmp_year, P);
+			break;
+		case 2:
+			printf("Unesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
+			if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer, "%29s %29s %d", tmp_name, tmp_last_name, &tmp_year) != 3) {
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
+				break;
+			}
+			InsertLast(tmp_name, tmp_last_name, tmp_year, P);
+			break;
+		case 3:
+			printf("Unesite prezime osobe koju zelite pronaci: ");
+			if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer, "%29s", lookup_last_name) != 1) {
+				printf("uneseni krivi podatci, pokusajte ponovo\n");
+				break;
+			}
+			Find(lookup_last_name, P);
+			break;
+		case 4:
+			printf("Unesite prezime osobe koju zelite izbrisati: ");
+			if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer, "%29s", lookup_last_name) != 1) {
+				printf("\nuneseni krivi podatci, pokusajte ponovo\n");
+				break;
+			}
+			DeleteElement(lookup_last_name, P);
+			break;
+		default:
+			printf("\nNeispravna opcija, pokusajte ponovo.\n");
+			break;
+		}
 	}
-	return 0;
 }
 
 int upper_strcmp(const char* string1, const char* string2) {
@@ -104,7 +111,7 @@ int upper_strcmp(const char* string1, const char* string2) {
 	return strcmp(str1, str2);
 }
 
-int InsertFront(const char* name, const char* last_name, int year, Position P){
+int InsertFirst(const char* name, const char* last_name, int year, Position P){
 	Position temp;
 	temp = (Position)malloc(sizeof(_person));
 	if (temp == NULL) {
@@ -123,7 +130,7 @@ int InsertFront(const char* name, const char* last_name, int year, Position P){
 	return 0;
 }
 
-int InsertBack(const char* name, const char* last_name, int year, Position P){
+int InsertLast(const char* name, const char* last_name, int year, Position P){
 	Position temp;
 	while (P->Next != NULL)
 		P = P->Next;
