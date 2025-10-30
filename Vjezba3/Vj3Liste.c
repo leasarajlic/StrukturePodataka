@@ -48,8 +48,9 @@ int main() {
 	_person head = { .firstName =  "", .lastName = "", .Byear = 0, NULL };
 	UserInput(&head);
 	PrintList(head.Next);
+	printf("\nbrisemo staru listu\n");
 	ReadFromDocument(&head);
-	printf("\ndodana nesortirana lista ucitana iz dokumenta\n");
+	printf("\nnesortirana lista ucitana iz dokumenta\n");
 	PrintList(head.Next);
 	printf("\nsortirano po prezimenu\n");
 	SortAll(&head);
@@ -107,7 +108,7 @@ int UserInput(Position P) {
 			case 3:
 				printf("Unesite prezime osobe koju zelite pronaci: ");
 				if (GetLastName(lookup_last_name)) {
-						Find(lookup_last_name, P);
+						Find(lookup_last_name, P->Next);
 					break;
 				}
 				printf("uneseni krivi podatci, pokusajte ponovo\n");
@@ -171,7 +172,6 @@ int upper_strcmp(const char* string1, const char* string2) {
 //zad 2. funk:
 
 Position Find(const char* last_name, Position P) {
-	P = P->Next;
 	while (P != NULL && (upper_strcmp(P->lastName, last_name) != 0))
 		P = P->Next;
 	if (P != NULL)
@@ -266,7 +266,7 @@ int PrintList(Position P){
  //zad 3. funk:
 
 int InsertAfter(const char* last_name_el, const char* name, const char* last_name, int year, Position P) {
-	Position prev = Find(last_name_el, P);
+	Position prev = Find(last_name_el, P->Next);
 	if (prev == NULL) {
 		printf("Umetanje nije moguce.\n");
 		return 0;
@@ -348,6 +348,8 @@ int SortAll(Position H){
 	return 0;
 }
 int ReadFromDocument(Position P) {
+	//obrisati staru listu prije unosa nove
+	FreeList(P);
 	FILE* read;
 	read = fopen("People.txt", "r");
 	if (read == NULL) {
