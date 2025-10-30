@@ -48,9 +48,8 @@ int main() {
 	_person head = { .firstName =  "", .lastName = "", .Byear = 0, NULL };
 	UserInput(&head);
 	PrintList(head.Next);
-	printf("\nbrisemo staru listu\n");
 	ReadFromDocument(&head);
-	printf("\nnesortirana lista ucitana iz dokuemnta\n");
+	printf("\ndodana nesortirana lista ucitana iz dokumenta\n");
 	PrintList(head.Next);
 	printf("\nsortirano po prezimenu\n");
 	SortAll(&head);
@@ -349,8 +348,6 @@ int SortAll(Position H){
 	return 0;
 }
 int ReadFromDocument(Position P) {
-	//obrisi staru listu prije ucitavanja nove
-	FreeList(P);
 	FILE* read;
 	read = fopen("People.txt", "r");
 	if (read == NULL) {
