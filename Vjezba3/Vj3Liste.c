@@ -114,7 +114,7 @@ int UserInput(Position P) {
 				printf("uneseni krivi podatci, pokusajte ponovo\n");
 				break;
 			case 4:
-				printf("Unesite prezime osobe koju zelite pronaci: ");
+				printf("Unesite prezime osobe koju zelite izbrisati: ");
 				if (GetLastName(lookup_last_name)) {
 						DeleteElement(lookup_last_name, P);
 					break;
