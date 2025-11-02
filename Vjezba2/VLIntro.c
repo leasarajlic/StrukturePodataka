@@ -78,7 +78,7 @@ int UserInput(Position P) {
 		switch(choice){
 			case 0:
 				printf("kraj unosa elemenata\n");
-				return 0;
+				return EXIT_SUCCESS;
 			case 1:
 				printf("Unesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
 				if (GetPerson(tmp_name, tmp_last_name, &tmp_year)) {
@@ -148,7 +148,7 @@ int InsertFirst(const char* name, const char* last_name, int year, Position P){
 	temp->Next = P->Next;
 	P->Next = temp;
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int InsertLast(const char* name, const char* last_name, int year, Position P){
@@ -168,20 +168,20 @@ int InsertLast(const char* name, const char* last_name, int year, Position P){
 
 	P->Next = temp;
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int PrintList(Position P){
 	if (P == NULL) {
 		printf("\nlista je prazna\n");
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	printf("\nElementi liste\n");
 	while (P != NULL) {
 		printf("%s %s %d\n", P->firstName, P->lastName, P->Byear);
 		P = P->Next;
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 Position Find(const char* last_name, Position P){
@@ -216,7 +216,7 @@ int DeleteElement(const char* last_name, Position P){
 	//oslobadanje memorije
 	free(temp);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int FreeList(Position head) {
@@ -228,5 +228,5 @@ int FreeList(Position head) {
 		free(temp);
 	}
 	
-	return 0;
+	return EXIT_SUCCESS;
 }

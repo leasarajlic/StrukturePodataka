@@ -88,7 +88,7 @@ int UserInput(Position P) {
 		switch(choice){
 			case 0:
 				printf("kraj unosa elemenata\n");
-				return 0;
+				return EXIT_SUCCESS;
 			case 1:
 				printf("Unesite redom ime, prezime i godinu rodenja osobe, odvojiti razmakom: ");
 				if (GetPerson(tmp_name, tmp_last_name, &tmp_year)) {
@@ -194,14 +194,14 @@ int FreeList(Position head) {
 		temp->Next = NULL;
 		free(temp);
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int DeleteElement(const char* last_name, Position P) {
 	Position Prev = FindPrev(last_name, P);
 	if (Prev->Next == NULL) {
 		printf("\nosoba s prezimenom %s nije u listi\n", last_name);
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	Position temp = Prev->Next;
 
@@ -211,7 +211,7 @@ int DeleteElement(const char* last_name, Position P) {
 	//oslobadanje memorije
 	free(temp);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 int InsertFirst(const char* name, const char* last_name, int year, Position P){
 	Position temp;
@@ -229,7 +229,7 @@ int InsertFirst(const char* name, const char* last_name, int year, Position P){
 	temp->Next = P->Next;
 	P->Next = temp;
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 int InsertLast(const char* name, const char* last_name, int year, Position P){
 	Position temp;
@@ -248,19 +248,19 @@ int InsertLast(const char* name, const char* last_name, int year, Position P){
 
 	P->Next = temp;
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 int PrintList(Position P){
 	if (P == NULL) {
 		printf("\nlista je prazna\n");
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	printf("\nElementi liste:\n\n");
 	while (P != NULL) {
 		printf("%s %s %d\n", P->firstName, P->lastName, P->Byear);
 		P = P->Next;
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
  //zad 3. funk:
