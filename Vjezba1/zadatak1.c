@@ -75,7 +75,7 @@ _stud* GetFileData(int lines){
 	_stud* s = (_stud*)malloc(lines * sizeof(_stud));
 	if (s == NULL) {
 		printf("Greska pri alokaciji memorije!\n");
-		return 0;
+		exit(EXIT_FAILURE);
 	}
 	for (int i = 0; i < lines; i++) {
 		fscanf(readFile, "%s %s %d", s[i].name, s[i].last_name, &s[i].apsolute_points);
@@ -99,7 +99,7 @@ int GetRelativePts(_stud* s, int lines)
 	for (int i = 0; i < lines; i++) {
 		s[i].relative_points = ((float)s[i].apsolute_points / max_bodovi) * 100;
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int Print(_stud* s, int redovi)
@@ -108,5 +108,5 @@ int Print(_stud* s, int redovi)
 	for (int i = 0; i < redovi; i++) {
 		printf("%-10s %-20s %-15d %.2f%%\n", s[i].name, s[i].last_name, s[i].apsolute_points, s[i].relative_points);
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
