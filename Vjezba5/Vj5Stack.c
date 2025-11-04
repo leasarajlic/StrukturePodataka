@@ -48,7 +48,7 @@ int CalculatePostfix(Position H) {
 		char c = post_buffer[i];
 		double num = 0;
 		//ako je procitana znamenka dodaje se na num_buffer sve dok se ne procita razmak tj. kraj broja
-		if (isdigit(c)) {
+		if (isdigit(c) || c == '.' || c == ',') {
 			num_buffer[j] = c;
 			j++;
 		}
