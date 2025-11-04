@@ -82,7 +82,7 @@ int CalculatePostfix(Position H) {
 		exit(EXIT_FAILURE);
 	}
 	printf("Uspjesno izracunat postfix izraz: %s\n", post_buffer);
-	printf("Rezultat je: %lf\n", H->Next->number);
+	printf("Rezultat je: %.4lf\n", H->Next->number);
 	return EXIT_SUCCESS;
 }
 int GetPostfix(char* post, int buff_size) {
@@ -92,7 +92,7 @@ int GetPostfix(char* post, int buff_size) {
 		exit(EXIT_FAILURE);
 	}
 	if (fgets(post, buff_size, readFile) == 0) {
-		printf("greska u citanju postfixa iz datoteke.\n");
+		printf("greska u citanju postfiksa iz datoteke.\n");
 		exit(EXIT_FAILURE);
 	}
 	fclose(readFile);
@@ -134,12 +134,12 @@ double Operation(double x, char op, double y) {
 			return x * y;
 		case '/':
 			if (y == 0) {
-				printf("Greska u %lf/%lf : Dijeljenje s 0 nije dopusteno!\n", x, y);
+				printf("Greska u %.4lf/%.4lf : Dijeljenje s 0 nije dopusteno!\n", x, y);
 				exit(EXIT_FAILURE);
 			}
 			return x / y;
 		default:
-			printf("Nepoznati operator %c u postfixu.\n", op);
+			printf("Nepoznati operator %c u postfiksu.\n", op);
 			exit(EXIT_FAILURE);
 		}
 }
