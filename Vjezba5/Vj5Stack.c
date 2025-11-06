@@ -50,6 +50,10 @@ int CalculatePostfix(Position H) {
 	for (i = 0; post_buffer[i] != '\0'; i++) {
 		char c = post_buffer[i];
 		double num = 0;
+		if(c == '-' && isdigit(post_buffer[i + 1])){
+			num_buffer[j] = c;
+			j++;
+		}
 		//ako je procitana znamenka dodaje se na num_buffer sve dok se ne procita razmak tj. kraj broja
 		if (isdigit(c) || c == '.') {
 			num_buffer[j] = c;
