@@ -26,10 +26,13 @@ int push(double, Position);
 int GetPostfix(char *, int);
 int CalculatePostfix(Position P);
 double Operation(double, char, double);
+int FreeStack(Position);
 
 int main() {
 	_postfix head = { .number = 0, .Next = NULL };
 	CalculatePostfix(&head);
+	FreeStack(&head);
+	printf("stack obrisan\n");
 	return 0;
 }
 int CalculatePostfix(Position H) {
@@ -79,6 +82,7 @@ int CalculatePostfix(Position H) {
 	}
 	if (H->Next->Next != NULL) {
 		printf("Ostalo je viska elemenata na stacku!\n");
+		FreeStack(H);
 		exit(EXIT_FAILURE);
 	}
 	printf("Uspjesno izracunat postfix izraz: %s\n", post_buffer);
@@ -142,4 +146,13 @@ double Operation(double x, char op, double y) {
 			printf("Nepoznati operator %c u postfiksu.\n", op);
 			exit(EXIT_FAILURE);
 		}
+}
+int FreeStack(Position H){
+	while(H->Next != NULL){
+		Position temp = H->Next;
+		H->Next = temp->Next;
+		temp->Next = NULL;
+		free(temp);
+	}
+	return EXIT_SUCCESS;
 }
