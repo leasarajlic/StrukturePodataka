@@ -95,7 +95,7 @@ int GetPostfix(char* post, int buff_size) {
 		printf("greska! datoteka nije u direktoriju.\n");
 		exit(EXIT_FAILURE);
 	}
-	if (fgets(post, buff_size, readFile) == 0) {
+	if (fgets(post, buff_size, readFile) == NULL) {
 		printf("greska u citanju postfiksa iz datoteke.\n");
 		exit(EXIT_FAILURE);
 	}
