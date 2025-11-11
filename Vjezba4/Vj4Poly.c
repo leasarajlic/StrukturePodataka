@@ -15,12 +15,9 @@ typedef struct poly {
 	Position Next;
 }_poly;
 
-//citaju polinome iz datoteka i spremaju ih u buffere. svaki polinom je u zasebnoj datoteci
-int GetPoly1Data(char *, int);
-int GetPoly2Data(char*, int);
-
-int SortedInput(double, double, Position); //unosi clanove u listu sortirano prema potenciji
+int GetPolyData(const char *, char *, int); //cita polinome iz datoteka i sprema ih u buffere. svaki polinom je u zasebnoj datoteci
 int CreatePoly(char*, Position); //cita clanove polinoma iz buffera i sprema ih u listu
+int SortedInput(double, double, Position); //unosi clanove u listu sortirano prema potenciji
 Position CreateTerm(double, double); //stvara element liste
 int MultiplyPolys(Position, Position, Position); //zbraja polinome
 int AddPolys(Position, Position, Position); //mnozi polinome
@@ -32,10 +29,10 @@ int main() {
 	_poly poly1 = head;
 	_poly poly2 = head;
 	char poly1_buffer[MAX_LEN] = "", poly2_buffer[MAX_LEN] = "";
-
-	GetPoly1Data(poly1_buffer, sizeof(poly1_buffer));
-	GetPoly2Data(poly2_buffer, sizeof(poly2_buffer));
-
+	
+	GetPolyData("poly1.txt", poly1_buffer, sizeof(poly1_buffer));
+	GetPolyData("poly2.txt", poly2_buffer, sizeof(poly2_buffer));
+	
 	//stvara vezanu listu za poly1 i ispisuje ju na ekran
 	CreatePoly(poly1_buffer, &poly1);
 	printf("prvi polinom: ");
@@ -46,7 +43,7 @@ int main() {
 	PrintPoly(poly2.Next);
 
 	AddPolys(&poly1, &poly2, &head);
-	FreePoly(&head);
+	FreePoly(&head); //brisemo rez. zbrajanja da bismo mogli pohraniti rezultat mnozenja
 	MultiplyPolys(&poly1, &poly2, &head);
 
 	FreePoly(&head);
@@ -54,27 +51,14 @@ int main() {
 	FreePoly(&poly2);
 	return 0;
 }
-int GetPoly1Data(char *buffer, int buffer_size) {
-	FILE* readF = fopen("poly1.txt", "r");
+int GetPolyData(const char *filename, char *buffer, int buffer_size) {
+	FILE* readF = fopen(filename, "r");
 	if (readF == NULL) {
-		printf("greska, datoteka nije u direktoriju!\n");
+		printf("greska, datoteka %s nije u direktoriju!\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	if (fgets(buffer, buffer_size, readF) == NULL) {
-		printf("greska u citanju polinoma u datoteci\n");
-		exit(EXIT_FAILURE);
-	}
-	fclose(readF);
-	return EXIT_SUCCESS;
-}
-int GetPoly2Data(char* buffer, int buffer_size) {
-	FILE* readF = fopen("poly2.txt", "r");
-	if (readF == NULL) {
-		printf("greska, datoteka nije u direktoriju!\n");
-		exit(EXIT_FAILURE);
-	}
-	if (fgets(buffer, buffer_size, readF) == NULL) {
-		printf("greska u citanju polinoma iz datoteke\n");
+		printf("greska u citanju polinoma iz datoteke %s\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	fclose(readF);
@@ -82,13 +66,13 @@ int GetPoly2Data(char* buffer, int buffer_size) {
 }
 int CreatePoly(char* buffer, Position H) {
 	char* token;
-	const char* separator = " \t\n";
+	const char* separator = " \t\n"; 
 	double tmp_coef, tmp_pow;
-	token = strtok(buffer, separator);
+	token = strtok(buffer, separator); //string se dijeli na tokene
 	while (token != NULL) {
 		tmp_coef = strtod(token, NULL);
 		token = strtok(NULL, separator);
-		if (token == NULL) break;
+		if (token == NULL) break; //sprijecava gresku ako je broj tokena neparan
 		tmp_pow = strtod(token, NULL);
 		token = strtok(NULL, separator);
 		SortedInput(tmp_coef, tmp_pow, H);
@@ -96,6 +80,7 @@ int CreatePoly(char* buffer, Position H) {
 	return EXIT_SUCCESS;
 }
 int SortedInput(double cf, double pow, Position P) {
+	//lista sortirana po opadajucim potencijama(od vece potencije prema manjoj)
 	Position current = P;
 	while (current->Next != NULL && pow < current->Next->power) 
 		current = current->Next;
@@ -122,12 +107,12 @@ Position CreateTerm(double cf, double pow) {
 	return temp;
 }
 int MultiplyPolys(Position p1, Position p2, Position main_poly){
-	Position current_poly1 = p1, current_poly2 = p2;
+	Position current_p1 = p1, current_p2 = p2;
 	double tmp_coef, tmp_pow;
-	for (current_poly1 = p1->Next; current_poly1 != NULL; current_poly1 = current_poly1->Next) {
-		for (current_poly2 = p2->Next; current_poly2 != NULL; current_poly2 = current_poly2->Next) {
-			tmp_coef = current_poly1->coef * current_poly2->coef;
-			tmp_pow = current_poly1->power + current_poly2->power;
+	for (current_p1 = p1->Next; current_p1 != NULL; current_p1 = current_p1->Next) {
+		for (current_p2 = p2->Next; current_p2 != NULL; current_p2 = current_p2->Next) {
+			tmp_coef = current_p1->coef * current_p2->coef;
+			tmp_pow = current_p1->power + current_p2->power;
 			SortedInput(tmp_coef, tmp_pow, main_poly);
 		}
 	}
@@ -142,8 +127,8 @@ int AddPolys(Position p1, Position p2, Position main_poly) {
 		SortedInput(current->coef, current->power, main_poly);
 		current = current->Next;
 	}
-	//u main polinom se kopira 1. poly 
-	// u SortedInput osigurano je da ce se elementi s istom potencijom zbrojiti
+	//u main polinom se kopira 1. polinom
+	//u SortedInput osigurano je da ce se elementi s istom potencijom zbrojiti
 	current = p1->Next;
 	while (current != NULL) {
 		SortedInput(current->coef, current->power, main_poly);
@@ -163,10 +148,10 @@ int PrintPoly(Position P) {
 	return EXIT_SUCCESS;
 }
 int FreePoly(Position H) {
-	Position P = H;
-	while (P->Next != NULL) {
-		Position temp = P->Next;
-		P->Next = temp->Next;
+	Position H = P;
+	while (H->Next != NULL) {
+		Position temp = H->Next;
+		H->Next = temp->Next;
 		temp->Next = NULL;
 		free(temp);
 	}
