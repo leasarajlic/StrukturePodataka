@@ -89,13 +89,9 @@ int SortedInput(double cf, int pow, Position P) {
 		current = current->Next;
 		//ako elementi imaju istu potenciju, zbrajaju se i rezultat se sprema u trenutni cvor
 		if(current->Next != NULL && current->Next->power == pow){
-			double new_coef = current->Next->coef + cf;
-		if(new_coef == 0){
+		current->Next->coef += cf;
+		if(current->Next->coef == 0)
 			FreeTerm(current, current->Next); //elementi su se ponistili i treba izbrisati element
-		}
-		else{
-			current->Next->coef = new_coef; //rezultat zbrajanja sprema se u current->Next
-		}
 		return EXIT_SUCCESS;
 		}
 		Position temp = CreateTerm(cf, pow);
