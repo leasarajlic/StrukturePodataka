@@ -11,14 +11,16 @@ Napomena: Eksponenti u datoteci nisu nuzno sortirani.*/
 
 typedef struct poly* Position;
 typedef struct poly {
-	double coef, power;
+	double coef;
+	int	power;
 	Position Next;
 }_poly;
 
 int GetPolyData(const char *, char *, int); //cita polinome iz datoteka i sprema ih u buffere. svaki polinom je u zasebnoj datoteci
 int CreatePoly(char*, Position); //cita clanove polinoma iz buffera i sprema ih u listu
-int SortedInput(double, double, Position); //unosi clanove u listu sortirano prema potenciji
-Position CreateTerm(double, double); //stvara element liste
+int SortedInput(double, int, Position); //unosi clanove u listu sortirano prema potenciji
+Position CreateTerm(double, int); //stvara element liste
+int FreeTerm(Position, Position); //brise element liste
 int MultiplyPolys(Position, Position, Position); //zbraja polinome
 int AddPolys(Position, Position, Position); //mnozi polinome
 int PrintPoly(Position);
@@ -67,27 +69,34 @@ int GetPolyData(const char *filename, char *buffer, int buffer_size) {
 int CreatePoly(char* buffer, Position H) {
 	char* token;
 	const char* separator = " \t\n"; 
-	double tmp_coef, tmp_pow;
+	double tmp_coef;
+	int tmp_pow;
 	token = strtok(buffer, separator); //string se dijeli na tokene
 	while (token != NULL) {
 		tmp_coef = strtod(token, NULL);
-		token = strtok(NULL, separator);
-		if (token == NULL) break; //sprijecava gresku ako je broj tokena neparan
-		tmp_pow = strtod(token, NULL);
+		token = strtok(NULL, separator); //ide na iduci token
+		if (token == NULL) break; //sprijecava gresku ako je broj tokena neparan/potencija ne postoji
+		tmp_pow = (int)strtol(token, NULL, 10); //10 - broj je iz dekadskog sustava
 		token = strtok(NULL, separator);
 		SortedInput(tmp_coef, tmp_pow, H);
 	}
 	return EXIT_SUCCESS;
 }
-int SortedInput(double cf, double pow, Position P) {
-	//lista sortirana po opadajucim potencijama(od vece potencije prema manjoj)
+int SortedInput(double cf, int pow, Position P) {
+	//lista sortirana po opadajucim potencijama(od vece prema manjoj)
 	Position current = P;
 	while (current->Next != NULL && pow < current->Next->power) 
 		current = current->Next;
 		//ako elementi imaju istu potenciju, zbrajaju se i rezultat se sprema u trenutni cvor
-		if (current->Next != NULL && current->Next->power == pow) {
-			current->Next->coef += cf; //kako smo novi element pohranili zbrajanjem, nema potrebe nastaviti s funkcijom
-			return EXIT_SUCCESS; 
+		if(current->Next != NULL && current->Next->power == pow){
+			double new_coef = current->Next->coef + cf;
+		if(new_coef == 0){
+			FreeTerm(current, current->Next); //elementi su se ponistili i treba izbrisati element
+		}
+		else{
+			current->Next->coef = new_coef; //rezultat zbrajanja sprema se u current->Next
+		}
+		return EXIT_SUCCESS;
 		}
 		Position temp = CreateTerm(cf, pow);
 		temp->Next = current->Next;
@@ -95,7 +104,7 @@ int SortedInput(double cf, double pow, Position P) {
 	
 	return EXIT_SUCCESS;
 }
-Position CreateTerm(double cf, double pow) {
+Position CreateTerm(double cf, int pow) {
 	Position temp = (Position)malloc(sizeof(_poly));
 	if (temp == NULL) {
 		printf("greska pri alokaciji emorije\n");
@@ -108,11 +117,13 @@ Position CreateTerm(double cf, double pow) {
 }
 int MultiplyPolys(Position p1, Position p2, Position main_poly){
 	Position current_p1 = p1, current_p2 = p2;
-	double tmp_coef, tmp_pow;
+	double tmp_coef;
+	int tmp_pow;
 	for (current_p1 = p1->Next; current_p1 != NULL; current_p1 = current_p1->Next) {
 		for (current_p2 = p2->Next; current_p2 != NULL; current_p2 = current_p2->Next) {
 			tmp_coef = current_p1->coef * current_p2->coef;
 			tmp_pow = current_p1->power + current_p2->power;
+			if(tmp_coef == 0) continue;
 			SortedInput(tmp_coef, tmp_pow, main_poly);
 		}
 	}
@@ -128,7 +139,7 @@ int AddPolys(Position p1, Position p2, Position main_poly) {
 		current = current->Next;
 	}
 	//u main polinom se kopira 1. polinom
-	//u SortedInput osigurano je da ce se elementi s istom potencijom zbrojiti
+	//SortedInput osigurava da ce se elementi s istom potencijom zbrojiti
 	current = p1->Next;
 	while (current != NULL) {
 		SortedInput(current->coef, current->power, main_poly);
@@ -142,18 +153,23 @@ int PrintPoly(Position P) {
 	//P je adresa prvog stvarnog elementa liste
 	Position H = P;
 	while (H != NULL) {
-		printf("%+.2lfx^%.0lf ", H->coef, H->power);
+		printf("%+.2lfx^%d ", H->coef, H->power);
 		H = H->Next;
 	}
+	printf("\n");
+	return EXIT_SUCCESS;
+}
+int FreeTerm(Position prev, Position term){
+	if(prev == NULL || term == NULL) return EXIT_FAILURE;
+	prev->Next = term->Next;
+	term->Next = NULL;
+	free(term);
 	return EXIT_SUCCESS;
 }
 int FreePoly(Position H) {
-	Position H = P;
-	while (H->Next != NULL) {
-		Position temp = H->Next;
-		H->Next = temp->Next;
-		temp->Next = NULL;
-		free(temp);
+	Position current = H;
+	while (current->Next != NULL) {
+		FreeTerm(current, current->Next);
 	}
 	return EXIT_SUCCESS;
 }
