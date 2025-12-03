@@ -1,0 +1,4 @@
+2025-01-15
+automatska busilica, 1, 70.00
+vino, 3, 6.30
+jaja, 3, 2.30
