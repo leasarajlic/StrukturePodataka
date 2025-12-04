@@ -4,7 +4,7 @@
 #include <string.h>
 #include "include/structures.h" //definicije struktura za racun i artikal
 #include "include/list_core.h" //funkcije za stvaranje sortiranih vezanih lista racuna i artikala iz datoteka, "zadatak za 2"
-#include "include/list_utils.h" //dodatne funkcije s artiklima
+#include "include/list_fun.h" //dodatne funkcije s artiklima
 
 
 int main() {

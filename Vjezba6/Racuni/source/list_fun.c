@@ -4,7 +4,7 @@
 #include <string.h>
 #include "../include/structures.h"
 #include "../include/list_core.h"
-#include "../include/list_utils.h"
+#include "../include/list_fun.h"
 #define MAX_LENGTH 50
 #define MONTH_NUM 12
 
