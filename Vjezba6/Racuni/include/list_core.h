@@ -17,6 +17,6 @@ int PrintArticles(PositionB B); //ispisuje sve artikle bez duplikata
 int FreeLists(PositionB B); //oslobada sve liste(racune i njihove artikle)
 
 //pomocne
-PositionA* UniqueArticles(PositionB B, int* str_count); //vraca pokazivac na niz pokazivaca na artikle bez duplih(svaki artikal ima JEDAN pok.)
+PositionA* UniqueArticles(PositionB B, int* str_count); //stvara niz pokazivaca na artikle bez duplih(svaki artikal ima JEDAN pok.)
 int IsUnique(PositionA* list, int prod_number,const char* product);//provjera postoji li vec artikal u nizu pokazivaca
 int FreeUniques(PositionA** plist, int count);//resetira niz pokazivaca artikala na NULL i oslobada alociranu memoriju
