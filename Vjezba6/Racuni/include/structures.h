@@ -1,8 +1,7 @@
 #pragma once
-/*ideja: imamo 2 vezane liste, jednu za racune i drugu za artikle.
+/*imamo 2 vezane liste, jednu za racune i drugu za artikle.
 svaki element u listi racuna predstavlja pojedini racun. 
-svaki racun sadrzi pokazivac na listu svojih artikala(MyArt = adresa prvog artikla).
-lista racuna je implementirana sa dummy head el., a artikli bez head-a.
+lista racuna je implementirana sa headom, a artikli bez head-a.
 */
 
 //lista artikala je unutar svakog racuna, artikli su sortirani abecedno po nazivu
