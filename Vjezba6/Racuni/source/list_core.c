@@ -9,7 +9,9 @@
 #define MAX_ARTCS 1000
 
 int GetAllBills(const char* filename, PositionB Bill_Head){
-	FILE* readb = fopen(filename, "r");
+	char path[128];
+	snprintf(path, sizeof(path), "data/%s", filename) //put do racuni.txt
+	FILE* readb = fopen(path, "r");
 	if (readb == NULL) {
 		printf("greska pri otvaranju datoteke %s", filename);
 		exit(EXIT_FAILURE);
@@ -60,9 +62,8 @@ int SortedInputDate(PositionB B, PositionB new){
 	//B je head element liste racuna
 	PositionB curr = B;
 	while (curr->NextBill != NULL && strcmp(curr->NextBill->date, new->date) < 0) {
-		//trazimo prvi el. koji ima noviji/veci datum i umecemo prije njega
 		/*strcmp moze za usporedbu samo zbog YYYY - MM - DD formata, 
-		u bilo kojem drugom formatu trebalo bi parsirati stringove na dan, mjesec i godinu*/
+		u bilo kojem drugom formatu trebalo bi parsirati na godinu, mjesec, dan*/
 		curr = curr->NextBill;
 	}
 	new->NextBill = curr->NextBill;

@@ -6,8 +6,9 @@
 #include "../include/list_core.h"
 #include "../include/list_utils.h"
 #define MAX_LENGTH 50
+#define MONTH_NUM 12
 
-const char* Months[12] = { "Sijecanj", "Veljaca", "Ozujak", "Travanj", "Svibanj", "Lipanj", "Srpanj",
+const char* Months[MONTH_NUM] = { "Sijecanj", "Veljaca", "Ozujak", "Travanj", "Svibanj", "Lipanj", "Srpanj",
 "Kolovoz", "Rujan", "Listopad", "Studeni", "Prosinac" };
 
 int UserInput(PositionB Bill_Head) {
@@ -66,7 +67,7 @@ int InputArticle(char* art) {
 	printf("\nunesite artikal: ");
 	if (!fgets(buffer, sizeof(buffer), stdin) || sscanf(buffer, "%49s", art) != 1) return EXIT_FAILURE;
 	art[strcspn(art, "\r\n")] = 0; //ukloni newline
-	return EXIT_SUCCESS; //vraca true ako je sscnaf uspjesan, a false ako nije
+	return EXIT_SUCCESS;
 }
 int InputPeriod(char* start, char* end) {
 	char buffer[128];
@@ -145,8 +146,8 @@ int ArtPopByPeriod(PositionB B, const char* start_date, const char* end_date) {
 }
 int MonthsBySpending(PositionB B) {
 	int i = 0, j = 0, year, month;
-	double month_expenses[12] = { 0 }, avg;
-	int month_bill_count[12] = { 0 };
+	double month_expenses[MONTH_NUM] = { 0 }, avg; //niz potrosnje po mjesecima
+	int month_bill_count[MONTH_NUM] = { 0 }; //niz racuna po mjesecima
 	PositionB curr_bill = B->NextBill;
 	while (curr_bill != NULL) {
 		(void)sscanf(curr_bill->date, "%d-%d", &year, &month);
@@ -159,7 +160,7 @@ int MonthsBySpending(PositionB B) {
 		curr_bill = curr_bill->NextBill;
 	}
 	printf("potrosnja po mjesecima:\n");
-	for (i = 0; i < 12; i++) {
+	for (i = 0; i < MONTH_NUM; i++) {
 		if (month_bill_count[i] > 0) {
 			avg = month_expenses[i] / month_bill_count[i];
 			printf("%s: %.2lf eur\n", Months[i], avg);
@@ -169,7 +170,7 @@ int MonthsBySpending(PositionB B) {
 }
 int MyArticleMonth(PositionB B, const char* article) {
 	int i = 0, j = 0, year, month, max_ammount, max_ind;
-	int month_appear[12] = { 0 };
+	int month_appear[MONTH_NUM] = { 0 }; //niz prodaje artikla po mjesecima
 	PositionB curr_bill = B->NextBill;
 	while (curr_bill != NULL) {
 		(void)sscanf(curr_bill->date, "%d-%d", &year, &month);
@@ -185,7 +186,7 @@ int MyArticleMonth(PositionB B, const char* article) {
 	}
 	max_ammount = month_appear[0];
 	max_ind = 0;
-	for (i = 0; i < 12; i++) {
+	for (i = 0; i < MONTH_NUM; i++) {
 		if (month_appear[i] > max_ammount) {
 			max_ammount = month_appear[i];
 			max_ind = i;
