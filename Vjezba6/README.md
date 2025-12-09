@@ -1,8 +1,4 @@
 # Read pls
-Koristene su 2 vezane liste, jedna za racune i druga za artikle.
-element racuna ima datum i pokazivac na listu artikala
-element artikla ima naziv, kolicinu i cijenu po komadu
- 
 
 Header datoteke nalaze se u folderu include,
 Njihove .c datoteke nalaze se u folderu source,
