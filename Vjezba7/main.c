@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define MAX_LEN 50
-//zad napravljen tako da je C: jedini root, nema siblings
+//zad napravljen tako da je C: root, nema siblings
 typedef struct Directory* dirPosition;
 typedef struct Directory {
 	char name[MAX_LEN];
@@ -40,7 +40,6 @@ int main() {
 	UserInput(&Stack_head, Dir_head.Next); //saljemo head od stacka i root cvor stabla(C:)
 	return 0;
 }
-
 int UserInput(stackPosition ST, dirPosition Root) {
 	int choice = -1;
 	char buffer[128];
@@ -48,7 +47,6 @@ int UserInput(stackPosition ST, dirPosition Root) {
 		char tmp_sub[MAX_LEN] = "", tmp_new[MAX_LEN] = "";
 		printf("\nIzaberite DOS naredbu\n");
 		printf("1 - md\n2 - cd dir \n3 - cd..\n4 - dir\n");
-		//izlaz iz ove fun.
 		printf("5 - izlaz\n");
 		//ispis da korisnik(ja kad debuggiram) vidi u kojem se direktoriju nalazi
 		printf("trenutni dir: %s\n", ST->Next->dirLevel->name);
@@ -57,7 +55,6 @@ int UserInput(stackPosition ST, dirPosition Root) {
 			printf("greska pri unosu, pokusajte opet\n");
 			continue;
 		}
-	
 		switch (choice) {
 		case 1:
 			printf("md ");
@@ -65,7 +62,8 @@ int UserInput(stackPosition ST, dirPosition Root) {
 				printf("uneseni krivi podatci, pokusajte ponovo\n");
 			else {
 				tmp_new[strcspn(tmp_new, "\r\n")] = 0;
-				AddNewDir(ST, tmp_new);
+				if(AddNewDir(ST, tmp_new) == EXIT_FAILURE)
+					printf("stvaranje direktorija nije uspjelo!\n");
 			}
 			break;
 		case 2:
@@ -97,7 +95,7 @@ dirPosition CreateDir(const char* newDir_name) {
 	dirPosition newDir = (dirPosition)malloc(sizeof(_directory));
 	if (!newDir) {
 		printf("pogreska s alokacijom memorije za %s\n", newDir_name);
-		exit(EXIT_FAILURE);
+		return NULL;
 	}
 	strcpy(newDir->name, newDir_name);
 	newDir->subDir = NULL;
@@ -106,16 +104,23 @@ dirPosition CreateDir(const char* newDir_name) {
 }
 int AddRoot(dirPosition dir_head, stackPosition ST, const char* name) {
 	dirPosition newDir = CreateDir(name);
+	if(newDir ==NULL){
+		printf("greska pri stvaranju root direktorija %s!\n", name);
+		exit(EXIT_FAILURE);
+	}
 	newDir->Next = dir_head->Next;
 	dir_head->Next = newDir;
-	push(ST, newDir);
+	if(push(ST, newDir) == EXIT_FAILURE){
+		printf("greska pri inicijaliziranju stoga!\n");
+		exit(EXIT_FAILURE);
+	}
 	return EXIT_SUCCESS;
 }
 int push(stackPosition ST, dirPosition Dir) {
 	stackPosition temp = (stackPosition)malloc(sizeof(_stack));
 	if (temp == NULL) {
 		printf("greska pri alokaciji memorije\n");
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
 	temp->Next = NULL;
 	temp->dirLevel = Dir;
@@ -124,22 +129,26 @@ int push(stackPosition ST, dirPosition Dir) {
 	return EXIT_SUCCESS;
 }
 int pop(stackPosition ST){
-	if (ST->Next != NULL) {
+	if (ST->Next == NULL){
+		printf("greska, stog je prazan\n");
+		return EXIT_FAILURE;
+	}
 		stackPosition temp = ST->Next;
 		ST->Next = temp->Next;
 		temp->Next = NULL;
 		temp->dirLevel = NULL;
 		free(temp);
-	}
-	return EXIT_SUCCESS;
+		return EXIT_SUCCESS;
 }
 int AddNewDir(stackPosition ST, const char* newDir_name) {
 	if (ST->Next == NULL) {
 		printf("greska - nema trenutnog direktorija\n");
-		return EXIT_SUCCESS;
+		return EXIT_FAILURE;
 	}
 	dirPosition ParentDir = ST->Next->dirLevel;
 	dirPosition newDir = CreateDir(newDir_name);
+	if(newDir == NULL) 
+		return EXIT_FAILURE;
 	newDir->Next = ParentDir->subDir;
 	ParentDir->subDir = newDir;
 	return EXIT_SUCCESS;
@@ -147,7 +156,7 @@ int AddNewDir(stackPosition ST, const char* newDir_name) {
 int GoIntoSubdir(stackPosition ST, const char* sub_name) {
 	if (!ST->Next) {
 		printf("greska - nema trenutnog direktorija\n");
-		return EXIT_SUCCESS;
+		return EXIT_FAILURE;
 	}
 	dirPosition curr_dir = ST->Next->dirLevel;
 	dirPosition curr_sub = curr_dir->subDir;
@@ -155,21 +164,28 @@ int GoIntoSubdir(stackPosition ST, const char* sub_name) {
 	while (curr_sub != NULL && strcmp(curr_sub->name, sub_name) != 0) {
 		curr_sub = curr_sub->Next;
 	}
-	//ako smo prosli svu djecu i nismo nasli sub_name, curr_sub ce doci na NULL
+	//nasli smo sub_name medu djecom
 	if (curr_sub != NULL) {
-		//nasli smo sub_name medu djecom
-		push(ST, curr_sub); //prebaci se u curr_sub
+		if(push(ST, curr_sub) == EXIT_FAILURE) { //prebaci se u curr_sub
+			printf("nije moguce staviti %s na stog\n", sub_name);
+			return EXIT_FAILURE;
+		}
+		return EXIT_SUCCESS;
 	}
+	//ako smo prosli svu djecu i nismo nasli sub_name, curr_sub ce biti NULL
 	else {
 		printf("%s nije pronaden\n", sub_name);
+		return EXIT_FAILURE;
 	}
-	return EXIT_SUCCESS;
 }
 int ReturnToParent(stackPosition ST) {
-	if (ST->Next == NULL || strcmp(ST->Next->dirLevel->name, "C:") == 0) {
-		//C: je jedini root
-		printf("greska - nema trenutnog direktorija ili je trenutni direktorij C:\n");
-		return EXIT_SUCCESS;
+	if (ST->Next == NULL) {
+		printf("greska - nema trenutnog direktorija\n");
+		return EXIT_FAILURE;
+	}
+	if(strcmp(ST->Next->dirLevel->name, "C:") == 0){
+		printf("greska - vec ste u root direktoriju C:\n");
+		return EXIT_FAILURE;
 	}
 	pop(ST); //ako je sve u redu, pop trenutni dir sa stacka
 	return EXIT_SUCCESS;
