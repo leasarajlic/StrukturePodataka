@@ -7,7 +7,7 @@ int AddNewDir(stackPosition ST, const char* newDir_name) {
 	}
 	dirPosition ParentDir = ST->Next->dirLevel;
 	dirPosition newDir = CreateDir(newDir_name);
-	if(ParentDir->subDir == NULL || strcmp(ParentDir->name, newDir->name) > 0){
+	if(ParentDir->subDir == NULL || strcmp(ParentDir->subDir->name, newDir->name) > 0){
 	//dodaje se na pocetak ako je lista prazna 
 	//ili je newDir abecedno prije prvog djeteta
 	newDir->Next = ParentDir->subDir;
