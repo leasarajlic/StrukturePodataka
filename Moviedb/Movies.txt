@@ -1,0 +1,8 @@
+The Matrix|Sci-Fi|1999
+The Batman|Mystery|2022
+Harry Potter and the Sorcerer's Stone|Adventure|2
+Back to the Future|Adventure|1985
+The Godfather|Mystery|1972
+Knives Out|Mystery|2019
+Dune|Sci-Fi|2021
+Star Wars: A New Hope|Adventure|1977

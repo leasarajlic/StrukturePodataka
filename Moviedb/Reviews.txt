@@ -1,0 +1,16 @@
+Petra|Star Wars: A New Hope|9
+Petra|Back to the Future|8
+Mimi|Star Wars: A New Hope|10
+Mimi|Dune|2
+Marko|The Matrix|9
+Marko|Dune|8
+Filip|Star Wars: A New Hope|8
+Filip|Harry Potter and the Sorcerer's Stone|8
+Nina|The Godfather|8
+Nina|The Batman|9
+Nina|Knives Out|9
+Luka|The Matrix|8
+Luka|Dune|9
+Boris|Star Wars: A New Hope|8
+Boris|Back to the Future|9
+Mate|Back to the Future|8
