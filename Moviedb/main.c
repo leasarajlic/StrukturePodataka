@@ -169,27 +169,40 @@ State MainMenu(TablePosU users, TablePosM movies, UserPos current_user) {
 			GetLine("Enter movie title: ", line, MAX_LEN);
 			StrToLower(line);
 			target_movie = UserFindMovie(movies, line);
-			if (target_movie != NULL && HasRated(current_user, target_movie->Title) == NULL) {
-				rating = readInt("Rate this movie: ", 1, 10);
-				addReview(users, movies, current_user->username, target_movie->Title, rating);
+			if (target_movie == NULL) {
+				printf("Movie '%s' not found.\n", line);
+			} 
+			else if (HasRated(current_user, target_movie->Title) != NULL) {
+				printf("You have already rated '%s'!\n", target_movie->Title);
 			}
-			else
-				printf("You have already rated this movie!\n");
+			else {
+				rating = readInt("Rate this movie (1-10): ", 1, 10);
+				addReview(users, movies, current_user->username, target_movie->Title, rating);
+				printf("Thank you for your review!\n");
+			}
 			break;
 		case 2:
 			GetLine("Enter movie title: ", line, MAX_LEN);
 			StrToLower(line);
 			target_movie = UserFindMovie(movies, line);
-			if (target_movie != NULL && HasRated(current_user, target_movie->Title) != NULL) {
-				DeleteReview(movies, current_user, target_movie->Title);
+			if (target_movie == NULL) {
+				printf("Movie '%s' not found.\n", line);
+			} 
+			else if (HasRated(current_user, target_movie->Title) == NULL) {
+				printf("You haven't rated '%s' yet!\n", target_movie->Title);
 			}
-			else
-				printf("You have not rated this movie yet!\n");
+			else {
+				if (readInt("Are you sure you want to delete your review?\n1 - Yes\n0 - No: ", 0, 1) == 1) {
+					DeleteReview(movies, current_user, target_movie->Title);
+					printf("Review deleted successfully.\n");
+				}
+			}
 			break;
 		case 3:
 			GetLine("Enter movie title: ", line, MAX_LEN);
 			StrToLower(line);
-			PrintMovie(movies, line);
+			if(PrintMovie(movies, line) == EXIT_FAILURE)
+			printf("Movie '%s' not found.\n", line);
 			break;
 		case 4:
 			PrintMyReviews(users, current_user);
