@@ -12,9 +12,9 @@
 #define GOOD_RATING 7
 //kolizije u hash tablicama rjesene su pomocu zasebnih redova
 typedef enum {
-	EXIT, // == 0 ako se ne naglasi drugacije
-	LOGIN_MENU, // == 1
-	MAIN_MENU // == 2
+	EXIT, // == 0
+	LOGIN_MENU, // == 1 itd.
+	MAIN_MENU
 }State;
 
 typedef struct Review* RevPos;
@@ -125,7 +125,7 @@ State LoginMenu(TablePosU users, UserPos* current_user) {
 			GetLine("Enter your username: ", line, MAX_LEN);
 			*current_user = findUser(users, line);
 			if (*current_user != NULL) {
-				printf("Welcome, %s!\n", (*current_user)->username);
+				printf("Welcome back, %s!\n", (*current_user)->username);
 				return MAIN_MENU;
 			}
 			printf("User not found.\n");
@@ -138,7 +138,7 @@ State LoginMenu(TablePosU users, UserPos* current_user) {
 				printf("Welcome, %s!\n", (*current_user)->username);
 				return MAIN_MENU;
 			}
-			printf("A user with this username already exists.Try a different username.\n");
+			printf("A user with this username already exists. Please try a different username.\n\n");
 			break;
 		case 0:
 			printf("Goodbye!\n");
@@ -176,6 +176,7 @@ State MainMenu(TablePosU users, TablePosM movies, UserPos current_user) {
 				printf("You have already rated '%s'!\n", target_movie->Title);
 			}
 			else {
+				PrintMovie(movies, line);
 				rating = readInt("Rate this movie (1-10): ", 1, 10);
 				addReview(users, movies, current_user->username, target_movie->Title, rating);
 				printf("Thank you for your review!\n");
@@ -660,6 +661,8 @@ int freeMovieTable(TablePosM mTable) {
 	free(mTable);
 	return EXIT_SUCCESS;
 }
+//people who liked A also liked B logika
+//za uneseni film, nadi sve fanove(osim mene) i pogledaj koje jos filmove ti ljudi vole, a da ih ja jos nisam pogledala. preporuci sve takve filmove
 int MovieRecommender(TablePosU uTable, TablePosM mTable, UserPos me) {
     char movieTitle[MAX_LEN], lookupTitle[MAX_LEN];
     GetLine("Enter a movie you liked: ", lookupTitle, MAX_LEN);
