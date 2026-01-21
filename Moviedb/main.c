@@ -4,7 +4,7 @@
 #include <ctype.h>
 #define MAX_LEN 50
 #define USER_TABLE_SIZE 11
-#define MOVIE_TABLE_SIZE 11
+#define MOVIE_TABLE_SIZE 29
 #define MOVIE_INFO 3
 #define REVIEW_INFO 3
 #define SAME_GENRE_BONUS 2
@@ -669,7 +669,7 @@ int MovieRecommender(TablePosU uTable, TablePosM mTable, UserPos me) {
 	StrToLower(lookupTitle);
     MoviePos target = UserFindMovie(mTable, lookupTitle);
     if (!target) {
-        printf("Movie %s not found.\n", movieTitle);
+        printf("Movie '%s' not found.\n", lookupTitle);
         return EXIT_FAILURE;
     }
 	strcpy(movieTitle, target->Title);

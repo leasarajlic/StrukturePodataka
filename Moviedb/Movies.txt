@@ -1,8 +1,17 @@
+Se7en|Mystery|1995
+The Prestige|Mystery|2006
 The Matrix|Sci-Fi|1999
-The Batman|Mystery|2022
-Harry Potter and the Sorcerer's Stone|Adventure|2
-Back to the Future|Adventure|1985
-The Godfather|Mystery|1972
 Knives Out|Mystery|2019
+The Godfather|Mystery|1972
+Blade Runner 2049|Sci-Fi|2017
+Jurassic Park|Adventure|1993
+Back to the Future|Adventure|1985
+The Batman|Mystery|2022
 Dune|Sci-Fi|2021
+Gone Girl|Mystery|2014
+Arrival|Sci-Fi|2016
+Inception|Sci-Fi|2010
+The Dark Knight|Mystery|2008
 Star Wars: A New Hope|Adventure|1977
+Star Wars: The Empire Strikes Back|Adventure|1980
+Interstellar|Sci-Fi|2014

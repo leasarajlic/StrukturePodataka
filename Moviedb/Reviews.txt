@@ -1,16 +1,35 @@
 Petra|Star Wars: A New Hope|9
 Petra|Back to the Future|8
+Petra|Jurassic Park|8
 Mimi|Star Wars: A New Hope|10
-Mimi|Dune|2
+Mimi|Star Wars: The Empire Strikes Back|10
+Mimi|Back to the Future|9
+Mimi|Jurassic Park|8
 Marko|The Matrix|9
 Marko|Dune|8
+Marko|Interstellar|10
+Marko|Inception|9
+Marko|Arrival|8
+Marko|Blade Runner 2049|9
 Filip|Star Wars: A New Hope|8
-Filip|Harry Potter and the Sorcerer's Stone|8
+Filip|Jurassic Park|7
 Nina|The Godfather|8
 Nina|The Batman|9
 Nina|Knives Out|9
+Nina|The Dark Knight|10
+Nina|Se7en|9
+Nina|Gone Girl|8
+Nina|The Prestige|9
+Luka|Dune|8
 Luka|The Matrix|8
-Luka|Dune|9
+Luka|Interstellar|9
+Luka|Inception|8
+Luka|Arrival|9
+Luka|Blade Runner 2049|8
 Boris|Star Wars: A New Hope|8
 Boris|Back to the Future|9
+Boris|Star Wars: The Empire Strikes Back|9
+Boris|Jurassic Park|7
 Mate|Back to the Future|8
+Mate|Star Wars: A New Hope|7
+Mate|Jurassic Park|6
