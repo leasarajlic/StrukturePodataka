@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#define MAX_LEN 50
+#define MAX_LEN 100
 #define USER_TABLE_SIZE 11
 #define MOVIE_TABLE_SIZE 29
 #define MOVIE_INFO 3
