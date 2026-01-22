@@ -3,6 +3,7 @@ Mimi
 Marko
 Filip
 Nina
-Luka
-Boris
-Mate
+Maja
+Ivan
+Ana
+Jure

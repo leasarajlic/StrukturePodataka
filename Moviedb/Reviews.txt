@@ -1,35 +1,68 @@
 Petra|Star Wars: A New Hope|9
 Petra|Back to the Future|8
-Petra|Jurassic Park|8
+Petra|The Matrix|7
+Petra|Inception|8
+Petra|The Dark Knight|9
+Petra|Knives Out|8
 Mimi|Star Wars: A New Hope|10
-Mimi|Star Wars: The Empire Strikes Back|10
-Mimi|Back to the Future|9
+Mimi|The Matrix|9
+Mimi|The Batman|8
+Mimi|Interstellar|9
+Mimi|The Dark Knight|8
+Mimi|Dune|7
+Mimi|Gone Girl|8
 Mimi|Jurassic Park|8
 Marko|The Matrix|9
 Marko|Dune|8
 Marko|Interstellar|10
 Marko|Inception|9
-Marko|Arrival|8
+Marko|Star Wars: A New Hope|8
+Marko|Back to the Future|7
+Marko|The Prestige|8
 Marko|Blade Runner 2049|9
 Filip|Star Wars: A New Hope|8
-Filip|Jurassic Park|7
+Filip|Knives Out|8
+Filip|The Matrix|7
+Filip|Inception|8
+Filip|Se7en|7
+Filip|Arrival|6
 Nina|The Godfather|8
 Nina|The Batman|9
 Nina|Knives Out|9
 Nina|The Dark Knight|10
-Nina|Se7en|9
-Nina|Gone Girl|8
+Nina|Star Wars: A New Hope|7
+Nina|Back to the Future|6
 Nina|The Prestige|9
-Luka|Dune|8
-Luka|The Matrix|8
-Luka|Interstellar|9
-Luka|Inception|8
-Luka|Arrival|9
-Luka|Blade Runner 2049|8
-Boris|Star Wars: A New Hope|8
-Boris|Back to the Future|9
-Boris|Star Wars: The Empire Strikes Back|9
-Boris|Jurassic Park|7
-Mate|Back to the Future|8
-Mate|Star Wars: A New Hope|7
-Mate|Jurassic Park|6
+Maja|The Batman|8
+Maja|Knives Out|9
+Maja|The Dark Knight|9
+Maja|Se7en|8
+Maja|Gone Girl|7
+Maja|The Prestige|8
+Maja|The Matrix|7
+Maja|Arrival|7
+Ivan|The Matrix|9
+Ivan|Dune|8
+Ivan|Interstellar|9
+Ivan|Arrival|8
+Ivan|Blade Runner 2049|9
+Ivan|Inception|10
+Ivan|Star Wars: A New Hope|7
+Ivan|Back to the Future|7
+Ivan|The Dark Knight|8
+Ivan|The Prestige|7
+Ana|The Batman|8
+Ana|Knives Out|9
+Ana|The Dark Knight|9
+Ana|Se7en|8
+Ana|Gone Girl|7
+Ana|The Prestige|8
+Ana|Star Wars: A New Hope|6
+Ana|The Matrix|5
+Jure|Star Wars: A New Hope|9
+Jure|Back to the Future|8
+Jure|The Batman|8
+Jure|The Dark Knight|9
+Jure|Inception|8
+Jure|Interstellar|9
+Jure|Jurassic Park|8

@@ -3,11 +3,11 @@
 #include <string.h>
 #include <ctype.h>
 #define MAX_LEN 100
+#define MAX_BUFFER 200
 #define USER_TABLE_SIZE 11
 #define MOVIE_TABLE_SIZE 29
 #define MOVIE_INFO 3
 #define REVIEW_INFO 3
-#define SAME_GENRE_BONUS 2
 #define MAX_CANDIDATES 10
 #define GOOD_RATING 7
 //kolizije u hash tablicama rjesene su pomocu zasebnih redova
@@ -113,19 +113,19 @@ int main() {
 
 State LoginMenu(TablePosU users, UserPos* current_user) {
 	int choice, running = 1;
-	char line[50];
+	char line[MAX_LEN];
 	while(running){
-		printf("Welcome, please log in or sign up to continue\n");
+		printf("\nWelcome, please log in or sign up to continue\n");
 		printf("\n1 - Log In");
 		printf("\n2 - Sign Up");
-		printf("\n0 - Exit\n");
+		printf("\n0 - Exit program\n");
 		choice = readInt("Choice: ", 0, 2);
 		switch (choice) {
 		case 1:
 			GetLine("Enter your username: ", line, MAX_LEN);
 			*current_user = findUser(users, line);
 			if (*current_user != NULL) {
-				printf("Welcome back, %s!\n", (*current_user)->username);
+				printf("Welcome back, %s!\n\n", (*current_user)->username);
 				return MAIN_MENU;
 			}
 			printf("User not found.\n");
@@ -135,10 +135,10 @@ State LoginMenu(TablePosU users, UserPos* current_user) {
 			*current_user = findUser(users, line);
 			if (*current_user == NULL) {
 				*current_user = addUser(users, line);
-				printf("Welcome, %s!\n", (*current_user)->username);
+				printf("Welcome, %s!\n\n", (*current_user)->username);
 				return MAIN_MENU;
 			}
-			printf("A user with this username already exists. Please try a different username.\n\n");
+			printf("A user with this username already exists. Please choose a different username.\n\n");
 			break;
 		case 0:
 			printf("Goodbye!\n");
@@ -152,16 +152,16 @@ State LoginMenu(TablePosU users, UserPos* current_user) {
 }
 State MainMenu(TablePosU users, TablePosM movies, UserPos current_user) {
 	int choice, rating, running = 1;
-	char line[50];
+	char line[MAX_LEN];
 	MoviePos target_movie = NULL;
 	while(running){
-		printf("\nYou are currently logged in as: %s\n", current_user->username);
+		printf("\nMAIN MENU (User: %s)\n", current_user->username);
 		printf("\n1 - Leave a review\n");
 		printf("2 - Delete a review\n");
 		printf("3 - Search movies\n");
 		printf("4 - My reviews\n");
 		printf("5 - Delete my account\n");
-		printf("6 - Movie recommendations\n");
+		printf("6 - What should I watch next?\n");
 		printf("0 - Log out\n");
 		choice = readInt("Choice: ", 0, 6);
 		switch (choice) {
@@ -193,6 +193,7 @@ State MainMenu(TablePosU users, TablePosM movies, UserPos current_user) {
 				printf("You haven't rated '%s' yet!\n", target_movie->Title);
 			}
 			else {
+				printf("Your rating for %s: %d\n", target_movie->Title, HasRated(current_user, target_movie->Title)->rating);
 				if (readInt("Are you sure you want to delete your review?\n1 - Yes\n0 - No: ", 0, 1) == 1) {
 					DeleteReview(movies, current_user, target_movie->Title);
 					printf("Review deleted successfully.\n");
@@ -293,7 +294,7 @@ int LoadMovies(const char* filename, TablePosM table) {
 		exit(EXIT_FAILURE);
 	}
 	char* info[MOVIE_INFO];
-	char Line[MAX_LEN], Title[MAX_LEN], Genre[MAX_LEN];
+	char Line[MAX_BUFFER], Title[MAX_LEN], Genre[MAX_LEN];
 	int Year;
 	while (fgets(Line, sizeof(Line), read)) {
 		Line[strcspn(Line, "\n")] = '\0';
@@ -334,7 +335,7 @@ int LoadUserReviews(const char* filename, TablePosU user_table, TablePosM movie_
 		exit(EXIT_FAILURE);
 	}
 	char* info[REVIEW_INFO];
-	char Line[MAX_LEN], Title[MAX_LEN], Username[MAX_LEN];
+	char Line[MAX_BUFFER], Title[MAX_LEN], Username[MAX_LEN];
 	int rating;
 	while (fgets(Line, sizeof(Line), read)) {
 		Line[strcspn(Line, "\n")] = '\0';
@@ -434,14 +435,21 @@ int PrintMovie(TablePosM mTable, const char* name) {
 	MoviePos movie = UserFindMovie(mTable, name);
 	if (movie == NULL)
 		return EXIT_FAILURE;
+	printf("\nMOVIE: %s\n", movie->Title);
+    printf("Genre:    %s\n", movie->Genre);
+    printf("Year:     %d\n", movie->ReleaseYear);
+    printf("Rating:   %.1f/10\n", movie->avgRating);
+    printf("Reviews:  %d\n", movie->reviewCount);
 	RevPos curr = movie->myReviews;
-	printf("%s|%s|%d\n", movie->Title, movie->Genre, movie->ReleaseYear);
-	printf("Rating: %.1f/10\n", movie->avgRating);
-	printf("Reviews(%d)\n", movie->reviewCount);
-	while (curr != NULL) {
-		printf("%s: %d\n", curr->user, curr->rating);
-		curr = curr->nextInMovie;
-	}
+	if (curr == NULL) {
+        printf("No reviews yet.\n");
+    } else {
+        printf("USER REVIEWS:\n");
+        while (curr != NULL) {
+            printf("%-10s: %d/10\n", curr->user, curr->rating);
+            curr = curr->nextInMovie;
+        }
+    }
 	return EXIT_SUCCESS;
 }
 int PrintMyReviews(TablePosU uTable, UserPos curr_user) {
@@ -450,9 +458,9 @@ int PrintMyReviews(TablePosU uTable, UserPos curr_user) {
 		printf("You haven't reviewed any movies yet.\n");
 		return EXIT_SUCCESS;
 	}
-	printf("My Reviews:\n");
+	printf("\nMY REVIEWS (%s)\n", curr_user->username);
 	while (curr != NULL) {
-		printf("%s: %d\n", curr->movie, curr->rating);
+		printf("%-15s: %d/10\n", curr->movie, curr->rating);
 		curr = curr->nextInUser;
 	}
 	return EXIT_SUCCESS;
@@ -576,7 +584,7 @@ int SaveMovies(const char* filename, TablePosM table) {
 	int i;
 	FILE* file = fopen(filename, "w");
 	if (file == NULL) {
-		printf("greska pri otvaranju datoteke %s\n", filename);
+		printf("error! file %s not found\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < table->size; i++) {
@@ -593,7 +601,7 @@ int SaveUsers(const char* filename, TablePosU table) {
 	int i;
 	FILE* file = fopen(filename, "w");
 	if (file == NULL) {
-		printf("greska pri otvaranju datoteke %s\n", filename);
+		printf("error! file %s not found\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < table->size; i++) {
@@ -610,7 +618,7 @@ int SaveUserReviews(const char* filename, TablePosU table) {
 	int i;
 	FILE* file = fopen(filename, "w");
 	if (file == NULL) {
-		printf("greska pri otvaranju datoteke %s\n", filename);
+		printf("error! file %s not found\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < table->size; i++) {
@@ -665,18 +673,18 @@ int freeMovieTable(TablePosM mTable) {
 //za uneseni film, nadi sve fanove(osim mene) i pogledaj koje jos filmove ti ljudi vole, a da ih ja jos nisam pogledala. preporuci sve takve filmove
 int MovieRecommender(TablePosU uTable, TablePosM mTable, UserPos me) {
     char movieTitle[MAX_LEN], lookupTitle[MAX_LEN];
+	printf("\nMOVIE RECOMMENDATIONS\n");
     GetLine("Enter a movie you liked: ", lookupTitle, MAX_LEN);
 	StrToLower(lookupTitle);
     MoviePos target = UserFindMovie(mTable, lookupTitle);
     if (!target) {
-        printf("Movie '%s' not found.\n", lookupTitle);
+        printf("\nMovie '%s' not found.\n", lookupTitle);
         return EXIT_FAILURE;
     }
 	strcpy(movieTitle, target->Title);
     MoviePos candidates[MAX_CANDIDATES];
-    int votes[MAX_CANDIDATES] = {0};
     int candidateCount = 0;
-    for (RevPos fanRev = target->myReviews; fanRev; fanRev = fanRev->nextInMovie) {
+    for (RevPos fanRev = target->myReviews; fanRev != NULL; fanRev = fanRev->nextInMovie) {
         // trazimo valid fanove filma
         if (fanRev->rating <= GOOD_RATING || strcmp(fanRev->user, me->username) == 0) continue;
         UserPos fan = findUser(uTable, fanRev->user);
@@ -685,34 +693,29 @@ int MovieRecommender(TablePosU uTable, TablePosM mTable, UserPos me) {
             if ((theirRev->rating <= GOOD_RATING) || strcmp(theirRev->movie, movieTitle) == 0
             || HasRated(me, theirRev->movie)) continue;
 			MoviePos candidate = findMovie(mTable, theirRev->movie);
-            int foundIndex = -1;
-			int bonus = 0;
 			//dodaj u listu kandidata za preporuku
+			int already_added = 0;
             for (int i = 0; i < candidateCount; i++) {
-                if (candidates[i] == candidate) {
-                    foundIndex = i;
-                    break;
-                }
+                if (candidates[i] == candidate){
+					already_added = 1;
+                    break;//ako vec postoji u listi kandidata, ne treba opet dodavati, preskoci
+				}
             }
-            if (foundIndex >= 0) { //ako vec postoji u listi kandidata
-                votes[foundIndex]++;
-            } else if (candidateCount < MAX_CANDIDATES) { //ako se prvi put dodaje
+			if (!already_added && candidateCount < MAX_CANDIDATES) { //ako vec nije u listi kandidata, dodaj
                 candidates[candidateCount] = candidate;
-				if (strcmp(candidate->Genre, target->Genre) == 0)
-					bonus = SAME_GENRE_BONUS; //bonus za isti zanr se dodaje samo jednom
-                votes[candidateCount] = 1 + bonus;
                 candidateCount++;
             }
         }
     }
     if (candidateCount == 0) {
-        printf("Sorry, no movies similar to %s were found.\n", movieTitle);
+        printf("Sorry, no reccomendations for '%s' were found.\n", movieTitle);
         return EXIT_SUCCESS;
     }
-    printf("People who liked '%s', also liked:\n", movieTitle);
+    printf("You liked: %s\n", movieTitle);
+	printf("Fans of %s also loved these movies:\n\n", movieTitle);
     for (int i = 0; i < candidateCount; i++) {
         if (candidates[i] != NULL) {
-            printf("%d. %s|%s (%d)\n", i+1, candidates[i]->Title, candidates[i]->Genre, candidates[i]->ReleaseYear);
+            printf("%d. %s | %s | %d\n", i+1, candidates[i]->Title, candidates[i]->Genre, candidates[i]->ReleaseYear);
             printf("Rating: %.1f/10\n", candidates[i]->avgRating);
         }
     }
